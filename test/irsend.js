@@ -21,6 +21,14 @@ describe('IRSend', function() {
     });
   });
 
+  describe('#send_multiple', function() {
+    it('should call the callback', function(done) {
+      irsend.send_multiple(2,'yamaha', 'KEY_POWER', function() {
+        done();
+      });
+    });
+  });
+
   describe('#send_start', function() {
     it('should call the callback', function(done) {
       irsend.send_start('yamaha', 'KEY_POWER', function() {
@@ -84,6 +92,25 @@ describe('IRSend', function() {
       );
     });
   });
+
+  describe('#_send_multiple', function() {
+    it('should generate empty strings and count = 1 on bad arguments', function() {
+      assert.equal(irsend._send_multiple(), 'irsend --count=1 SEND_ONCE "" ""');
+    });
+
+    it('should generate valid irsend command with count remote and code arguments', function() {
+      assert.equal(irsend._send_once(2,'yamaha', 'KEY_POWER'), 'irsend --count=2 SEND_ONCE "yamaha" "KEY_POWER"');
+    });
+
+    it('should handle an array of codes', function() {
+      assert.equal(
+        irsend._send_once(2,'yamaha', ['KEY_POWER', 'KEY_VOLUMEUP', 'KEY_VOLUMEDOWN']), 
+        'irsend --count=2 SEND_ONCE "yamaha" "KEY_POWER" "KEY_VOLUMEUP" "KEY_VOLUMEDOWN"'
+      );
+    });
+  });
+
+
 
   describe('#_send_start', function() {
     it('should generate empty strings on bad arguments', function() {
